@@ -1,12 +1,13 @@
-FROM node:4-alpine
-ENV NODE_ENV "production"
-ENV PORT 8079
-EXPOSE 8079
-RUN addgroup mygroup && adduser -D -G mygroup myuser && mkdir -p /usr/src/app && chown -R myuser /usr/src/app
+# use a node base image
+FROM node:7-onbuild
 
-USER myuser
+# set maintainer
+LABEL maintainer "miiro@getintodevops.com"
 
-COPY . /usr/src/app
+# set a health check
+HEALTHCHECK --interval=5s \
+            --timeout=5s \
+            CMD curl -f http://127.0.0.1:8000 || exit 1
 
-# Start the app
-CMD ["/usr/local/bin/npm", "start"]
+# tell docker what port to expose
+EXPOSE 8000
